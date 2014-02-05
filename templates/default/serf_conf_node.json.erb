@@ -1,0 +1,37 @@
+{
+<%- hostname = `hostname -f`.chomp -%>
+  "node_name": "<%= hostname %>",
+  "tags": {
+    "role": "<%= node[:serf][:node][:role] %>"
+  },
+  "bind": "<%= node[:serf][:node][:bind] %>",
+  "advertise": "<%= node[:serf][:node][:advertise] %>",
+  "rpc_addr": "<%= node[:serf][:node][:rpc_addr] %>",
+<%- if node[:serf][:encrypt_key] -%>
+  "encrypt_key": "<%= node[:serf][:encrypt_key] %>",
+<%- end -%>
+  "log_level": "<%= node[:serf][:log_level] %>",
+  "start_join": [
+  <%- node[:serf][:node][:start_join].each do |start_join| -%>
+    <%- if node[:serf][:node][:start_join].last == start_join -%>
+      "<%= start_join %>"
+    <%- else -%>
+      "<%= start_join %>",
+    <%- end -%>
+  <%- end -%>
+  ],
+<%- if node[:serf][:node][:event_handlers] -%>
+  "event_handlers": [
+  <%- node[:serf][:node][:event_handlers].each do |event_handler| -%>
+    <%- if node[:serf][:node][:event_handlers].last == event_handler -%>
+      "<%= event_handler %>"
+    <%- else -%>
+      "<%= event_handler %>",
+    <%- end -%>
+  <%- end -%>
+  ],
+<%- end -%>
+  "profile": "<%= node[:serf][:profile] %>",
+  "leave_on_terminate": <%= node[:serf][:leave_on_terminate] %>,
+  "skip_leave_on_interrupt": <%= node[:serf][:skip_leave_on_interrupt] %>
+}

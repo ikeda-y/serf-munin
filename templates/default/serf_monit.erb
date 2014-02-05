@@ -1,0 +1,3 @@
+check process serf matching "serf agent"
+  start program "<%= node[:serf][:install_dir] %>/bin/serf_ctl start"
+  stop program "<%= node[:serf][:install_dir] %>/bin/serf_ctl stop"

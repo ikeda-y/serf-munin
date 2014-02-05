@@ -1,0 +1,20 @@
+#!/bin/bash
+
+<%= node[:serf][:install_dir] %>/bin/serf members | while read line; do
+  HOST=`echo ${line} | awk '{ print $1 }'`
+  ADDRESS=`echo ${line} | awk '{ print $2 }' | awk -F : '{print $1}'`
+  STATE=`echo ${line} | awk '{ print $3 }'`
+  ROLE=`echo ${line} | awk '{ print $4 }' | sed -e "s/role=//"`
+
+  if [ ! -e /etc/munin/munin-conf.d/${HOST}.conf -a ${STATE} = "alive" ]; then
+    cat << __EOF__ > "/etc/munin/munin-conf.d/${HOST}.conf"
+[${ROLE};${HOST}]
+    address ${ADDRESS}
+    use_node_name yes
+__EOF__
+  elif [ -e /etc/munin/munin-conf.d/${HOST}.conf -a ${STATE} != "alive" ]; then
+    rm -rf /etc/munin/munin-conf.d/${HOST}.conf
+  fi
+done
+
+exit 0
