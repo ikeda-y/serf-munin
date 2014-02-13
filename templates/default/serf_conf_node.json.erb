@@ -1,6 +1,5 @@
 {
-<%- hostname = `hostname -f`.chomp -%>
-  "node_name": "<%= hostname %>",
+  "node_name": "<%= node[:fqdn] %>",
   "tags": {
     "role": "<%= node[:serf][:node][:role] %>"
   },
