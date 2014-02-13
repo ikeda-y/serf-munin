@@ -26,4 +26,11 @@ default[:serf][:node][:rpc_addr]          = '127.0.0.1:7373'
 default[:serf][:node][:start_join]        = [ "#{default[:serf][:node][:bind]}" ]
 default[:serf][:node][:event_handlers]    = nil
 
+# munin-conf-cleaner settings
+default[:serf][:cleaner][:cron][:minute]  = '*/5'
+default[:serf][:cleaner][:cron][:hour]    = '*'
+default[:serf][:cleaner][:cron][:day]     = '*'
+default[:serf][:cleaner][:cron][:month]   = '*'
+default[:serf][:cleaner][:cron][:weekday] = '*'
+
 default[:monit][:source]                  = 'installer'

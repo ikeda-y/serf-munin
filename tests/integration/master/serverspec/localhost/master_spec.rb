@@ -33,8 +33,8 @@ describe file('/usr/local/serf/bin/munin_conf_cleaner') do
   it { should be_executable }
 end
 
-describe file('/etc/cron.d/munin_conf_cleaner') do
-  it { should be_file }
+describe cron do
+  it { should have_entry('*/5 * * * * /usr/loca/serf/bin/munin_conf_cleaner')
 end
 
 describe file('/usr/local/serf/conf/serf_conf.json') do

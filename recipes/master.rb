@@ -72,11 +72,14 @@ template bin_path + 'munin_conf_cleaner' do
   mode '0700'
 end
 
-template '/etc/cron.d/munin_conf_cleaner' do
-  source 'munin_conf_cleaner_cron.erb'
-  owner "#{user}"
-  group "#{group}"
-  mode '0700'
+cron 'munin_conf_cleaner' do
+  minute  node[:serf][:cleaner][:cron][:minute]
+  hour    node[:serf][:cleaner][:cron][:hour]
+  day     node[:serf][:cleaner][:cron][:day]
+  month   node[:serf][:cleaner][:cron][:month]
+  weekday node[:serf][:cleaner][:cron][:weekday]
+  user    "#{user}"
+  command bin_path + "munin_conf_cleaner"
 end
 
 # Create monit script for serf
