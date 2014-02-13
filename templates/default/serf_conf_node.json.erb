@@ -11,23 +11,11 @@
 <%- end -%>
   "log_level": "<%= node[:serf][:log_level] %>",
   "start_join": [
-  <%- node[:serf][:node][:start_join].each do |start_join| -%>
-    <%- if node[:serf][:node][:start_join].last == start_join -%>
-      "<%= start_join %>"
-    <%- else -%>
-      "<%= start_join %>",
-    <%- end -%>
-  <%- end -%>
+    <%= node[:serf][:node][:start_join].map{|v| "\"#{v}\""}.join(", ") %>
   ],
 <%- if node[:serf][:node][:event_handlers] -%>
   "event_handlers": [
-  <%- node[:serf][:node][:event_handlers].each do |event_handler| -%>
-    <%- if node[:serf][:node][:event_handlers].last == event_handler -%>
-      "<%= event_handler %>"
-    <%- else -%>
-      "<%= event_handler %>",
-    <%- end -%>
-  <%- end -%>
+    <%= node[:serf][:node][:event_handlers].map{|v| "\"#{v}\""}.join(", ") %>
   ],
 <%- end -%>
   "profile": "<%= node[:serf][:profile] %>",
