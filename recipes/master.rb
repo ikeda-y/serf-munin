@@ -1,4 +1,3 @@
-include_recipe 'apt'
 include_recipe 'munin::master'
 include_recipe 'monit'
 

@@ -1,4 +1,3 @@
-include_recipe 'apt'
 include_recipe 'munin::node'
 include_recipe 'monit'
 

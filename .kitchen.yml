@@ -14,10 +14,16 @@ platforms:
 
 suites:
   - name: serf-munin-master
-    run_list: ["recipe[serf-munin::master]"]
+    run_list: [
+      "recipe[apt]",
+      "recipe[serf-munin::master]"
+    ]
     attributes:
 
   - name: serf-munin-node
-    run_list: ["recipe[serf-munin::node]"]
+    run_list: [
+      "recipe[apt]",
+      "recipe[serf-munin::node]"
+    ]
     attributes:
 
