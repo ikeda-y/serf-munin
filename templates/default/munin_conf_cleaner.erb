@@ -1,6 +1,15 @@
 #!/bin/bash
 
-<%= node[:serf][:install_dir] %>/bin/serf members | while read line; do
+<%= node[:serf][:install_dir] %>/bin/serf members > /tmp/serf_agent_members.txt
+
+if [ "$?" -eq 1 ]; then
+  logger -t munin_conf_cleaner "[ERROR] Executed command: <%= node[:serf][:install_dir] %>/bin/serf members"
+  exit 1
+fi
+
+COUNT=0
+
+while read line; do
   HOST=`echo ${line} | awk '{ print $1 }'`
   ADDRESS=`echo ${line} | awk '{ print $2 }' | awk -F : '{print $1}'`
   STATE=`echo ${line} | awk '{ print $3 }'`
@@ -9,12 +18,23 @@
   if [ ! -e /etc/munin/munin-conf.d/${HOST}.conf -a ${STATE} = "alive" ]; then
     cat << __EOF__ > "/etc/munin/munin-conf.d/${HOST}.conf"
 [${ROLE};${HOST}]
-    address ${ADDRESS}
-    use_node_name yes
+  address ${ADDRESS}
+  use_node_name yes
 __EOF__
   elif [ -e /etc/munin/munin-conf.d/${HOST}.conf -a ${STATE} != "alive" ]; then
     rm -rf /etc/munin/munin-conf.d/${HOST}.conf
   fi
-done
+
+  if [ ${COUNT} -eq 0 ]; then
+    HOSTS="${HOST}.conf"
+  else
+    HOSTS="${HOSTS}|${HOST}.conf"
+  fi
+
+  COUNT=`expr ${COUNT} + 1`
+done < /tmp/serf_agent_members.txt
+
+cd /etc/munin/munin-conf.d/
+ls | grep -v -E "${HOSTS}" | xargs rm -f
 
 exit 0
