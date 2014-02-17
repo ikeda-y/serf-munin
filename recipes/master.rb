@@ -2,8 +2,8 @@ include_recipe 'munin::master'
 include_recipe 'monit'
 
 home = node[:serf][:install_dir]
-bin_path = home + '/bin/'
-conf_path = home + '/conf/'
+bin_path = home + '/bin'
+conf_path = home + '/conf'
 
 user = 'root'
 group = 'root'
@@ -47,7 +47,7 @@ execute 'Setup serf' do
 end
 
 # Setup serf-munin script
-cookbook_file bin_path + 'serf_munin' do
+cookbook_file bin_path + '/serf_munin' do
   source 'serf_munin.sh'
   owner "#{user}"
   group "#{group}"
@@ -55,7 +55,7 @@ cookbook_file bin_path + 'serf_munin' do
 end
 
 # Create serf config
-template conf_path + 'serf_conf.json' do
+template conf_path + '/serf_conf.json' do
   source 'serf_conf_master.json.erb'
   owner "#{user}"
   group "#{group}"
@@ -64,7 +64,7 @@ template conf_path + 'serf_conf.json' do
 end
 
 # Setup munin config cleaner
-template bin_path + 'munin_conf_cleaner' do
+template bin_path + '/munin_conf_cleaner' do
   source 'munin_conf_cleaner.erb'
   owner "#{user}"
   group "#{group}"
@@ -78,11 +78,11 @@ cron 'munin_conf_cleaner' do
   month   node[:serf][:cleaner][:cron][:month]
   weekday node[:serf][:cleaner][:cron][:weekday]
   user    "#{user}"
-  command bin_path + "munin_conf_cleaner"
+  command bin_path + "/munin_conf_cleaner"
 end
 
 # Create monit script for serf
-template bin_path + 'serf_ctl' do
+template bin_path + '/serf_ctl' do
   source 'serf_ctl.erb'
   owner "#{user}"
   group "#{group}"
@@ -97,4 +97,12 @@ template '/etc/monit/conf.d/serf_monit' do
   group "#{group}"
   mode '0600'
   notifies :restart, 'service[monit]'
+end
+
+# Restart serf
+execute 'Restart serf' do
+  command <<-EOH
+    sudo #{bin_path}/serf_ctl stop
+    sudo #{bin_path}/serf_ctl start &
+  EOH
 end
