@@ -8,7 +8,7 @@ case $1 in
                 ;;
         stop)
                 <%= node[:serf][:install_dir] %>/bin/serf leave
-                kill -9 $PID
+                kill -TERM $PID
                 ;;
         *)
                 echo "usage: serf_ctl.sh {start|stop}"
