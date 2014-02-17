@@ -1,0 +1,17 @@
+#!/bin/bash
+
+PID=`ps auxw | grep 'serf agent' | egrep -v grep | awk '{ print $2 }'`
+
+case $1 in
+        start)
+                <%= node[:serf][:install_dir] %>/bin/serf agent -config-file=<%= node[:serf][:install_dir] %>/conf/serf_conf.json | logger -t serf
+                ;;
+        stop)
+                <%= node[:serf][:install_dir] %>/bin/serf leave
+                kill -TERM $PID
+                ;;
+        *)
+                echo "usage: serf_ctl.sh {start|stop}"
+                ;;
+esac
+exit 0

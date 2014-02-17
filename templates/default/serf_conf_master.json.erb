@@ -1,0 +1,24 @@
+{
+  "node_name": "<%= node[:fqdn] %>",
+  "tags": {
+    "role": "<%= node[:serf][:master][:role] %>"
+  },
+  "bind": "<%= node[:serf][:master][:bind] %>",
+  "advertise": "<%= node[:serf][:master][:advertise] %>",
+  "rpc_addr": "<%= node[:serf][:master][:rpc_addr] %>",
+<%- if node[:serf][:encrypt_key] -%>
+  "encrypt_key": "<%= node[:serf][:encrypt_key] %>",
+<%- end -%>
+  "log_level": "<%= node[:serf][:log_level] %>",
+  "event_handlers": [
+<%- if node[:serf][:master][:event_handlers] %>
+  <%- node[:serf][:master][:event_handlers].each do |event_handler| -%>
+    "<%= event_handler %>",
+  <%- end -%>
+<%- end -%>
+    "<%= node[:serf][:install_dir] %>/bin/serf_munin"
+  ],
+  "profile": "<%= node[:serf][:profile] %>",
+  "leave_on_terminate": <%= node[:serf][:leave_on_terminate] %>,
+  "skip_leave_on_interrupt": <%= node[:serf][:skip_leave_on_interrupt] %>
+}

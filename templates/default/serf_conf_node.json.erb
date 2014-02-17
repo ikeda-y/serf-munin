@@ -1,0 +1,24 @@
+{
+  "node_name": "<%= node[:fqdn] %>",
+  "tags": {
+    "role": "<%= node[:serf][:node][:role] %>"
+  },
+  "bind": "<%= node[:serf][:node][:bind] %>",
+  "advertise": "<%= node[:serf][:node][:advertise] %>",
+  "rpc_addr": "<%= node[:serf][:node][:rpc_addr] %>",
+<%- if node[:serf][:encrypt_key] -%>
+  "encrypt_key": "<%= node[:serf][:encrypt_key] %>",
+<%- end -%>
+  "log_level": "<%= node[:serf][:log_level] %>",
+  "start_join": [
+    <%= node[:serf][:node][:start_join].map{|v| "\"#{v}\""}.join(", ") %>
+  ],
+<%- if node[:serf][:node][:event_handlers] -%>
+  "event_handlers": [
+    <%= node[:serf][:node][:event_handlers].map{|v| "\"#{v}\""}.join(", ") %>
+  ],
+<%- end -%>
+  "profile": "<%= node[:serf][:profile] %>",
+  "leave_on_terminate": <%= node[:serf][:leave_on_terminate] %>,
+  "skip_leave_on_interrupt": <%= node[:serf][:skip_leave_on_interrupt] %>
+}
